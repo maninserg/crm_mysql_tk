@@ -1,7 +1,5 @@
-from dis import dis
-from platform import python_branch
+from cgitb import lookup
 from tkinter import *
-from turtle import clear, title
 import mysql.connector
 
 root = Tk()
@@ -84,7 +82,6 @@ def clear_fields():
     discount_code_box.delete(0, END)
     price_paid_box.delete(0, END)
 
-
 # Submit Customer To DataBase
 def add_customer():
     sql_command = "INSERT INTO customers (first_name, last_name, zipcode, price_paid, email, address_1, address_2, city, state, country, phone, payment_method, discount_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -97,6 +94,21 @@ def add_customer():
     mydb.commit()
     # Clear fields 
     clear_fields()
+
+# List Customers
+def list_customers():
+    list_customers_query = Tk()
+    list_customers_query.title("List All Customers")
+    list_customers_query.geometry("800x600")
+    # Query The Database
+    my_cursor.execute("SELECT * FROM customers")
+    result = my_cursor.fetchall()
+    for index, item in enumerate(result):
+        num = 0
+        for field in item:
+            lookup_label = Label(list_customers_query, text=field)
+            lookup_label.grid(row=index, column=num)
+            num += 1
 
 
 # Create a label
@@ -164,6 +176,10 @@ add_customer_button.grid(row=14, column=0, padx=10, pady=10)
 
 clear_fields_button = Button(root, text="Clear Fields", command=clear_fields)
 clear_fields_button.grid(row=14, column=1)
+
+# List customers button
+list_customers_button = Button(root, text="List Customers", command=list_customers)
+list_customers_button.grid(row=15, column=0, sticky=W, padx=10)
 
 # Print All Items from customers table
 my_cursor.execute("SELECT * FROM customers")
