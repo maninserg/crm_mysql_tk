@@ -1,6 +1,6 @@
-from cgitb import lookup
 from tkinter import *
 import mysql.connector
+import csv 
 
 root = Tk()
 
@@ -95,6 +95,12 @@ def add_customer():
     # Clear fields 
     clear_fields()
 
+# Write List Customers to csv file
+def write_to_csv(result):
+    with open('customers.csv', 'a') as f:
+        w = csv.writer(f, dialect='excel')
+        w.writerows(result)
+
 # List Customers
 def list_customers():
     list_customers_query = Tk()
@@ -109,6 +115,8 @@ def list_customers():
             lookup_label = Label(list_customers_query, text=field)
             lookup_label.grid(row=index, column=num)
             num += 1
+    csv_button = Button(list_customers_query, text="Save to Excel", command=lambda: write_to_csv(result))
+    csv_button.grid(row=index+1, column=0)
 
 
 # Create a label
