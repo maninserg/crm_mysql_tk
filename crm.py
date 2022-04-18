@@ -1,6 +1,9 @@
+from curses import textpad
+from select import select
 from tkinter import *
 import mysql.connector
 import csv 
+from tkinter import ttk
 
 root = Tk()
 
@@ -124,8 +127,18 @@ def search_customers():
     search_customers.title("Search Customers")
     search_customers.geometry("800x600")
     def search_now():
+        selected = drop.get()
+        sql = ""
+        if selected == "Search by ...":
+            test = Label(search_customers, text="You forgot to pick a drop down selection")
+            test.grid(row=2, column=0)
+        if selected == "Last Name":
+            sql = "SELECT * FROM customers WHERE last_name = %s"
+        if selected == "Email Address":
+            sql = "SELECT * FROM customers WHERE email = %s"
+        if selected == "Customer ID":
+            sql = "SELECT * FROM customers WHERE user_id = %s"
         searched = search_box.get()
-        sql = "SELECT * FROM customers WHERE last_name = %s"
         name = (searched, )
         result = my_cursor.execute(sql, name)
         result = my_cursor.fetchall()
@@ -139,11 +152,16 @@ def search_customers():
     search_box = Entry(search_customers)
     search_box.grid(row=0, column=1, padx=10, pady=10)
     # Entry box Label search for customers
-    search_box_label = Label(search_customers, text="Search Customers By Last Name: ")
+    search_box_label = Label(search_customers, text="Search")
     search_box_label.grid(row=0, column=0, padx=10, pady=10)
     # Entry box Button search for customers
     search_box_button = Button(search_customers, text="Search", command=search_now)
     search_box_button.grid(row=1, column=0, padx=10, pady=10)
+    # Drop Down Box
+    drop = ttk.Combobox(search_customers, values=["Search by ...", "Last Name", "Email Address",
+                                                  "Customer ID"])
+    drop.current(0)
+    drop.grid(row=0, column=2)
 
 
 # Create a label
