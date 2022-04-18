@@ -118,6 +118,33 @@ def list_customers():
     csv_button = Button(list_customers_query, text="Save to Excel", command=lambda: write_to_csv(result))
     csv_button.grid(row=index+1, column=0)
 
+# Search Customers
+def search_customers():
+    search_customers = Tk()
+    search_customers.title("Search Customers")
+    search_customers.geometry("800x600")
+    def search_now():
+        searched = search_box.get()
+        sql = "SELECT * FROM customers WHERE last_name = %s"
+        name = (searched, )
+        result = my_cursor.execute(sql, name)
+        result = my_cursor.fetchall()
+
+        if not result:
+            result = "Record Not Found..."
+        searched_label = Label(search_customers, text=result)
+        searched_label.grid(row=2, column=0, padx=10)
+
+    # Entry box to search for customers
+    search_box = Entry(search_customers)
+    search_box.grid(row=0, column=1, padx=10, pady=10)
+    # Entry box Label search for customers
+    search_box_label = Label(search_customers, text="Search Customers By Last Name: ")
+    search_box_label.grid(row=0, column=0, padx=10, pady=10)
+    # Entry box Button search for customers
+    search_box_button = Button(search_customers, text="Search", command=search_now)
+    search_box_button.grid(row=1, column=0, padx=10, pady=10)
+
 
 # Create a label
 title_label = Label(root, text="My Customer Database", font=("Helvetica"))
@@ -188,6 +215,10 @@ clear_fields_button.grid(row=14, column=1)
 # List customers button
 list_customers_button = Button(root, text="List Customers", command=list_customers)
 list_customers_button.grid(row=15, column=0, sticky=W, padx=10)
+
+# Search Customers
+search_customers_button = Button(root, text="Search Customers", command=search_customers)
+search_customers_button.grid(row=15, column=1, sticky=W, padx=10)
 
 # Print All Items from customers table
 my_cursor.execute("SELECT * FROM customers")
